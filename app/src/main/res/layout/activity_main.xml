@@ -18,7 +18,7 @@
             android:inputType="number"
             android:hint="Page Number"
             android:layout_weight="1"
-            android:text="0"
+            android:text="5"
             android:textColor="@color/colorNightText"
             android:textColorHint="@color/colorNightText"
             />

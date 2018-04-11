@@ -1,4 +1,4 @@
-package com.maclolm.iwaraviewer;
+package com.maclolm.iwaraviewer.util;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
