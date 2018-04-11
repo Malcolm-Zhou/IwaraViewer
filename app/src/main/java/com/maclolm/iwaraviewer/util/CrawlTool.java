@@ -26,7 +26,7 @@ public class CrawlTool {
         System.out.println("getCrawlData start");
 
         String url = DOMAIN + "/videos?page=" + pageNum;
-        return GetListPage(url, null, pageNum);
+        return GetListPage(url, "360p", pageNum);
     }
 
 

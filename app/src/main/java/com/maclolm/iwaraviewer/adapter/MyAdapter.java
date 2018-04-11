@@ -1,8 +1,6 @@
 package com.maclolm.iwaraviewer.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +10,7 @@ import android.widget.TextView;
 
 import com.maclolm.iwaraviewer.R;
 import com.maclolm.iwaraviewer.bean.VideoInfo;
+import com.maclolm.iwaraviewer.util.LoadImagesTask;
 
 import java.util.ArrayList;
 
@@ -54,7 +53,10 @@ public class MyAdapter extends BaseAdapter {
         TextView tv_like = convertView.findViewById(R.id.like);
         TextView tv_rate = convertView.findViewById(R.id.rate);
 
-        iv_img.setImageResource(R.drawable.test);
+        String http = "http:" + videoInfo.getImgSrc();
+        //启动异步任务，加载网络图片
+        new LoadImagesTask(iv_img).execute(http);
+
         tv_title.setText(videoInfo.getTitle());
         tv_address.setText(videoInfo.getAddress());
         tv_view.setText(videoInfo.getView());
