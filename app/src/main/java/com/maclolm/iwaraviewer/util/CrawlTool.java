@@ -47,6 +47,7 @@ public class CrawlTool {
 
                 Element likeElement = node.selectFirst(".icon-bg .right-icon.likes-icon");
                 Element viewElement = node.selectFirst(".icon-bg .left-icon.likes-icon");
+                Element titleElement = node.selectFirst("h3 a");
                 if (likeElement != null && viewElement != null) {
                     like = likeElement.text().trim();
                     view = viewElement.text().trim();
@@ -80,7 +81,7 @@ public class CrawlTool {
 
                 videoInfo.setRate(rateStr);
                 videoInfo.setPageNum(pageNum);
-                videoInfo.setTitle("");
+                videoInfo.setTitle(titleElement.text().trim());
                 videoInfos.add(videoInfo);
             }
             return videoInfos;

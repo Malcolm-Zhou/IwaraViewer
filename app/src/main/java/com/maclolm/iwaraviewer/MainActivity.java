@@ -47,11 +47,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onSumbit(View view) {
-        Toast.makeText(getApplicationContext(), "Page: " + pageNumInput.getText().toString(), Toast.LENGTH_SHORT).show();
+        final String pageNum = pageNumInput.getText().toString();
+        Toast.makeText(getApplicationContext(), "Page: " + pageNum, Toast.LENGTH_SHORT).show();
         //开一条子线程加载网络数据
         Runnable runnable = new Runnable() {
             public void run() {
-                list = CrawlTool.getCrawlData("5");
+                list = CrawlTool.getCrawlData(pageNum);
                 handler.sendMessage(handler.obtainMessage(0, list));
             }
         };
