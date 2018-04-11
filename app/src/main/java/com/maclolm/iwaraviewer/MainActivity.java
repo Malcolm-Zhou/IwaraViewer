@@ -21,9 +21,6 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private EditText pageNumInput;
-    private Button submitBtn;
-
-    private ListView listviewsimple;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,16 +28,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         pageNumInput = findViewById(R.id.editTextPageNum);
-        submitBtn = findViewById(R.id.submitBtn);
-        listviewsimple = findViewById(R.id.listviewsimple);
+        Button submitBtn = findViewById(R.id.submitBtn);
+        ListView listviewsimple = findViewById(R.id.listviewsimple);
 
 
 
-
-        ArrayList<VideoInfo> list = CrawlTool.getCrawlData("101");
-
+        VideoInfo info3 = new VideoInfo("address", "Title", "101", "imgsrc", "100", "3000", "3.3");
+        ArrayList<VideoInfo> list = new ArrayList<>();
+        list.add(info3);
         MyAdapter myAdapter = new MyAdapter(list, this);
         listviewsimple.setAdapter(myAdapter);
+
+        CrawlTool.getCrawlData(list, "5");
+
+
 
     }
 

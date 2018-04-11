@@ -27,6 +27,7 @@ public class LoadImagesTask extends AsyncTask<String, Void, Bitmap> {
             imageUrl = new URL(params[0]);
             HttpURLConnection conn = (HttpURLConnection) imageUrl.openConnection();
             conn.setDoInput(true);
+            conn.setConnectTimeout(10000);
             conn.connect();
             inputStream = conn.getInputStream();
             bitmap = BitmapFactory.decodeStream(inputStream);

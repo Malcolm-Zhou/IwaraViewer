@@ -22,17 +22,15 @@ public class CrawlTool {
     private static Gson gson = new Gson();
 
 
-    public static ArrayList<VideoInfo> getCrawlData(String pageNum) {
+    public static void getCrawlData(ArrayList<VideoInfo> list, String pageNum) {
         System.out.println("getCrawlData start");
-
         String url = DOMAIN + "/videos?page=" + pageNum;
-        return GetListPage(url, "360p", pageNum);
+        GetListPage(url, "360p", pageNum, list);
     }
 
 
-    public static ArrayList<VideoInfo> GetListPage(String url, String resolution, String pageNum) {
+    private static void GetListPage(String url, String resolution, String pageNum, ArrayList<VideoInfo> videoInfos) {
         try {
-            ArrayList<VideoInfo> videoInfos = new ArrayList<>();
             VideoInfo videoInfo = new VideoInfo();
             Document doc = Jsoup.connect(url).get();
 
@@ -85,11 +83,9 @@ public class CrawlTool {
                 videoInfo.setTitle("");
                 videoInfos.add(videoInfo);
             }
-            return videoInfos;
 
         } catch (IOException e) {
             e.printStackTrace();
-            return new ArrayList<>();
         }
     }
 
