@@ -22,20 +22,22 @@ public class CrawlTool {
     private static Gson gson = new Gson();
 
 
-    public static void getCrawlData(ArrayList<VideoInfo> list, String pageNum) {
+    public static ArrayList<VideoInfo> getCrawlData(String pageNum) {
         System.out.println("getCrawlData start");
-        String url = DOMAIN + "/videos?page=" + pageNum;
-        GetListPage(url, "360p", pageNum, list);
+        String url = DOMAIN_NSFW + "/videos?page=" + pageNum;
+        return GetListPage(url, null, pageNum);
     }
 
 
-    private static void GetListPage(String url, String resolution, String pageNum, ArrayList<VideoInfo> videoInfos) {
+    private static ArrayList<VideoInfo> GetListPage(String url, String resolution, String pageNum) {
         try {
-            VideoInfo videoInfo = new VideoInfo();
+            ArrayList<VideoInfo> videoInfos = new ArrayList<>();
+
             Document doc = Jsoup.connect(url).get();
 
             Elements nodes = doc.getElementsByClass("node-video");
             for (Element node : nodes) {
+                VideoInfo videoInfo = new VideoInfo();
                 //Show like/view rate START
                 String like = "0";
                 String view = "1";
@@ -49,6 +51,8 @@ public class CrawlTool {
                     like = likeElement.text().trim();
                     view = viewElement.text().trim();
                 }
+                videoInfo.setLike(like);
+                videoInfo.setView(view);
                 if (view.contains("k")) {
                     view = view.substring(0, view.length() - 1);
                     viewD = Double.parseDouble(view) * 1000;
@@ -62,8 +66,10 @@ public class CrawlTool {
                 //Show like/view rate END
 
                 Element img = node.getElementsByTag("img").first();
-                String imgSrc = img.attr("src");
-
+                String imgSrc = "";
+                if(img != null) {
+                    imgSrc = img.attr("src");
+                }
                 Element link = node.getElementsByTag("a").first();
                 String linkHref = link.attr("href");
                 String address = GetVideoAddress(linkHref, resolution);
@@ -76,16 +82,17 @@ public class CrawlTool {
 
                 System.out.println(imgSrc);
                 videoInfo.setImgSrc(imgSrc);
-                videoInfo.setLike(like);
-                videoInfo.setView(view);
+
                 videoInfo.setRate(rateStr);
                 videoInfo.setPageNum(pageNum);
                 videoInfo.setTitle("");
                 videoInfos.add(videoInfo);
             }
+            return videoInfos;
 
         } catch (IOException e) {
             e.printStackTrace();
+            return new ArrayList<>();
         }
     }
 
@@ -99,7 +106,7 @@ public class CrawlTool {
                     resolutionIndex = 2;
                 }
             }
-            url = DOMAIN + "/api" + url.replace("videos", "video");
+            url = DOMAIN_NSFW + "/api" + url.replace("videos", "video");
             Connection.Response res = Jsoup.connect(url)
                     .header("Accept", "*/*")
                     .header("Accept-Encoding", "gzip, deflate")
