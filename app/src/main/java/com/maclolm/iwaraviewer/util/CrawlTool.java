@@ -25,11 +25,11 @@ public class CrawlTool {
     public static ArrayList<VideoInfo> getCrawlData(String pageNum) {
         System.out.println("getCrawlData start");
         String url = DOMAIN_NSFW + "/videos?page=" + pageNum;
-        return GetListPage(url, null, pageNum);
+        return GetListPage(url, pageNum);
     }
 
 
-    private static ArrayList<VideoInfo> GetListPage(String url, String resolution, String pageNum) {
+    private static ArrayList<VideoInfo> GetListPage(String url, String pageNum) {
         try {
             ArrayList<VideoInfo> videoInfos = new ArrayList<>();
 
@@ -72,13 +72,8 @@ public class CrawlTool {
                 }
                 Element link = node.getElementsByTag("a").first();
                 String linkHref = link.attr("href");
-                String address = GetVideoAddress(linkHref, resolution);
-                if (!address.contains("file.php")) {
-                    //TODO 视频来自外站
-                    videoInfo.setAddress("TempAddressForOuterVideo");
-                } else {
-                    videoInfo.setAddress(address);
-                }
+                videoInfo.setAddress(linkHref);
+
 
                 System.out.println(imgSrc);
                 videoInfo.setImgSrc(imgSrc);
@@ -96,7 +91,7 @@ public class CrawlTool {
         }
     }
 
-    private static String GetVideoAddress(String url, String resolution) {
+    public static String GetVideoAddress(String url, String resolution) {
         try {
             int resolutionIndex = 0;
             if (resolution != null) {

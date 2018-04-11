@@ -90,12 +90,41 @@ public class MainActivity extends AppCompatActivity {
 
 
         TextView tv_addressview = view.findViewById(R.id.address);
+        final String address = tv_addressview.getText().toString();
+        final String[] url = {""};
 
-        //play(tv_addressview.getText().toString());
-        ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        // 将文本内容放到系统剪贴板里。
-        cm.setText(tv_addressview.getText());
-        Toast.makeText(getApplicationContext(), "复制成功", Toast.LENGTH_SHORT).show();
+        //handler与线程之间的通信及数据处理
+        handler = new Handler() {
+            public void handleMessage(Message msg) {
+                if (msg.what == 0) {
+                    //msg.obj是获取handler发送信息传来的数据
+                    @SuppressWarnings("unchecked")
+                    String url = (String) msg.obj;
+                    ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                    // 将文本内容放到系统剪贴板里。
+                    cm.setText(url);
+                    Toast.makeText(getApplicationContext(), "复制成功", Toast.LENGTH_SHORT).show();
+                    //play(address);
+
+                }
+            }
+        };
+
+        Runnable runnable = new Runnable() {
+            public void run() {
+                url[0] = CrawlTool.GetVideoAddress(address, "540p");
+                if (!url[0].contains("file.php")) {
+                    //视频来自外站
+                    url[0] = "TempAddressForOuterVideo";
+                }
+                handler.sendMessage(handler.obtainMessage(0, url[0]));
+            }
+        };
+
+        //开启线程
+        new Thread(runnable).start();
+
+
     }
 
     private void play(String url) {
@@ -105,9 +134,6 @@ public class MainActivity extends AppCompatActivity {
         mediaIntent.setDataAndType(Uri.parse(url), mimeType);
         startActivity(mediaIntent);
     }
-
-
-
 
 
 }
