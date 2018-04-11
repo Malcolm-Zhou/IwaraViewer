@@ -39,7 +39,8 @@ public class MainActivity extends AppCompatActivity {
         MyAdapter myAdapter = new MyAdapter(list, this);
         listviewsimple.setAdapter(myAdapter);
 
-        CrawlTool.getCrawlData(list, "5");
+        //http://blog.csdn.net/strawberry2013/article/details/12253301
+        //CrawlTool.getCrawlData(list, "5");
 
 
 
