@@ -9,6 +9,19 @@ public class VideoInfo {
     private String view;
     private String rate;
 
+    public VideoInfo() {
+    }
+
+    public VideoInfo(String address, String title, String pageNum, String imgSrc, String like, String view, String rate) {
+        this.address = address;
+        this.title = title;
+        this.pageNum = pageNum;
+        this.imgSrc = imgSrc;
+        this.like = like;
+        this.view = view;
+        this.rate = rate;
+    }
+
     public String getAddress() {
         return address;
     }

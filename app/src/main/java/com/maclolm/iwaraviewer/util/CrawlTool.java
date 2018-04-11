@@ -14,7 +14,6 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 public class CrawlTool {
@@ -23,7 +22,7 @@ public class CrawlTool {
     private static Gson gson = new Gson();
 
 
-    public static List<VideoInfo> getCrawlData(String pageNum) {
+    public static ArrayList<VideoInfo> getCrawlData(String pageNum) {
         System.out.println("getCrawlData start");
 
         String url = DOMAIN + "/videos?page=" + pageNum;
@@ -31,7 +30,7 @@ public class CrawlTool {
     }
 
 
-    public static List<VideoInfo> GetListPage(String url, String resolution, String pageNum) {
+    public static ArrayList<VideoInfo> GetListPage(String url, String resolution, String pageNum) {
         try {
             ArrayList<VideoInfo> videoInfos = new ArrayList<>();
             VideoInfo videoInfo = new VideoInfo();
