@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.maclolm.iwaraviewer.R;
 import com.maclolm.iwaraviewer.bean.VideoInfo;
-import com.maclolm.iwaraviewer.util.LoadImagesTask;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,7 +67,7 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
 
         String http = "http:" + videoInfo.getImgSrc();
         iv_img.setTag(http);
-        iv_img.setImageResource(R.drawable.test);
+        iv_img.setImageResource(R.color.colorNightBG);
         //启动异步任务，加载网络图片
         BitmapWorkerTask task = new BitmapWorkerTask(http);
         task.execute(http);
