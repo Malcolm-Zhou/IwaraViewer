@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
     private EditText pageNumInput;
     private ArrayList<VideoInfo> list;
     private MyAdapter adapter;
-    private Handler handler;
     private ListView listviewsimple;
     private Spinner resSpinner;
 
@@ -56,20 +55,14 @@ public class MainActivity extends AppCompatActivity {
         final String pageNum = pageNumInput.getText().toString();
         Toast.makeText(getApplicationContext(), "Page: " + pageNum, Toast.LENGTH_SHORT).show();
         //开一条子线程加载网络数据
-        Runnable runnable = new Runnable() {
-            public void run() {
-                list = CrawlTool.getCrawlData(pageNum);
-                handler.sendMessage(handler.obtainMessage(0, list));
-            }
-        };
+
 
         try {
-            //开启线程
-            new Thread(runnable).start();
+
             //handler与线程之间的通信及数据处理
-            handler = new Handler() {
+            final Handler handler = new Handler() {
                 public void handleMessage(Message msg) {
-                    if (msg.what == 0) {
+                    if (msg.what == 10) {
                         //msg.obj是获取handler发送信息传来的数据
                         @SuppressWarnings("unchecked")
                         ArrayList<VideoInfo> list = (ArrayList<VideoInfo>) msg.obj;
@@ -78,6 +71,16 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             };
+
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    list = CrawlTool.getCrawlData(pageNum);
+                    handler.sendMessage(handler.obtainMessage(10, list));
+                }
+            };
+
+            //开启线程
+            new Thread(runnable).start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -101,9 +104,9 @@ public class MainActivity extends AppCompatActivity {
         final String[] url = {""};
 
         //handler与线程之间的通信及数据处理
-        handler = new Handler() {
+        final Handler handler = new Handler() {
             public void handleMessage(Message msg) {
-                if (msg.what == 0) {
+                if (msg.what == 11) {
                     //msg.obj是获取handler发送信息传来的数据
                     @SuppressWarnings("unchecked")
                     String url = (String) msg.obj;
@@ -125,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                     //视频来自外站
                     url[0] = "TempAddressForOuterVideo";
                 }
-                handler.sendMessage(handler.obtainMessage(0, url[0]));
+                handler.sendMessage(handler.obtainMessage(11, url[0]));
             }
         };
 

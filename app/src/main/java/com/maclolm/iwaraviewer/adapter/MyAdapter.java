@@ -4,8 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +15,6 @@ import android.widget.TextView;
 
 import com.maclolm.iwaraviewer.R;
 import com.maclolm.iwaraviewer.bean.VideoInfo;
-import com.maclolm.iwaraviewer.util.BitmapCacheUtils;
-import com.maclolm.iwaraviewer.util.NetCacheUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,23 +34,6 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
         this.context = mContext;
         this.mListView = lv;
     }
-
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case NetCacheUtils.SUCCESS://成功
-                    Bitmap bitmap = (Bitmap) msg.obj;
-                    int position = msg.arg1;
-                    ImageView image = (ImageView) mListView.findViewWithTag(position);//注意这行代码
-                    image.setImageBitmap(bitmap);
-                    break;
-                case NetCacheUtils.FAIL://失败
-                    break;
-            }
-        }
-    };
 
     @Override
     public int getCount() {
@@ -87,14 +66,12 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
 
 
         String http = "http:" + videoInfo.getImgSrc();
-        iv_img.setTag(position);
-        iv_img.setImageResource(R.color.colorNightBG);
+        iv_img.setTag(http);
+        iv_img.setImageResource(R.mipmap.test);
         //启动异步任务，加载网络图片
-//        BitmapWorkerTask task = new BitmapWorkerTask(http);
-//        task.execute(http);
+        BitmapWorkerTask task = new BitmapWorkerTask(http);
+        task.execute(http);
 
-        BitmapCacheUtils loadImgUtil = new BitmapCacheUtils(context, handler);
-        loadImgUtil.getBitmap(http, position);
 
         tv_title.setText(videoInfo.getTitle());
         tv_address.setText(videoInfo.getAddress());
