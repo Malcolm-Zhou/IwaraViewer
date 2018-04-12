@@ -1,13 +1,16 @@
 package com.maclolm.iwaraviewer;
 
+import android.annotation.SuppressLint;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.util.LruCache;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
@@ -31,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private MyAdapter adapter;
     private ListView listviewsimple;
     private Spinner resSpinner;
+    private LruCache<String, Bitmap> mMemoryCache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,29 +42,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         pageNumInput = findViewById(R.id.editTextPageNum);
-        Button submitBtn = findViewById(R.id.submitBtn);
         listviewsimple = findViewById(R.id.listviewsimple);
         resSpinner = findViewById(R.id.resSpinner);
 
         String[] resArr = {"Source", "540p", "360p"};
-        ArrayAdapter<String> spinnerAdapter=new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, resArr);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, resArr);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
         resSpinner.setAdapter(spinnerAdapter);
-        resSpinner.setSelection(1,true);
+        resSpinner.setSelection(1, true);
 
+        initLruCache();
 
     }
 
     public void onSumbit(View view) {
         final String pageNum = pageNumInput.getText().toString();
-        Toast.makeText(getApplicationContext(), "Page: " + pageNum, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Loading Page: " + pageNum, Toast.LENGTH_SHORT).show();
         //开一条子线程加载网络数据
-
-
         try {
-
             //handler与线程之间的通信及数据处理
-            final Handler handler = new Handler() {
+            @SuppressLint("HandlerLeak") final Handler handler = new Handler() {
                 public void handleMessage(Message msg) {
                     if (msg.what == 10) {
                         //msg.obj是获取handler发送信息传来的数据
@@ -71,40 +72,34 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             };
-
             Runnable runnable = new Runnable() {
                 public void run() {
                     list = CrawlTool.getCrawlData(pageNum);
                     handler.sendMessage(handler.obtainMessage(10, list));
                 }
             };
-
-            //开启线程
             new Thread(runnable).start();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     //绑定数据
     public void BinderListData(ArrayList<VideoInfo> list) {
         //创建adapter对象
-        adapter = new MyAdapter(list, this, listviewsimple);
+        adapter = new MyAdapter(list, this, listviewsimple, mMemoryCache);
         //将Adapter绑定到listview中
         listviewsimple.setAdapter(adapter);
     }
 
     public void onPlayVideo(View view) {
 
-
         TextView tv_addressview = view.findViewById(R.id.address);
         final String address = tv_addressview.getText().toString();
         final String[] url = {""};
 
         //handler与线程之间的通信及数据处理
-        final Handler handler = new Handler() {
+        @SuppressLint("HandlerLeak") final Handler handler = new Handler() {
             public void handleMessage(Message msg) {
                 if (msg.what == 11) {
                     //msg.obj是获取handler发送信息传来的数据
@@ -132,10 +127,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        //开启线程
         new Thread(runnable).start();
-
-
     }
 
     private void play(String url) {
@@ -144,6 +136,25 @@ public class MainActivity extends AppCompatActivity {
         Intent mediaIntent = new Intent(Intent.ACTION_VIEW);
         mediaIntent.setDataAndType(Uri.parse(url), "video/mp4");
         startActivity(mediaIntent);
+    }
+
+    private void initLruCache() {
+        // Get max available VM memory, exceeding this amount will throw an
+        // OutOfMemory exception. Stored in kilobytes as LruCache takes an
+        // int in its constructor.
+        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+
+        // Use 1/4th of the available memory for this memory cache.
+        final int cacheSize = maxMemory / 4;
+
+        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
+            @Override
+            protected int sizeOf(String key, Bitmap bitmap) {
+                // The cache size will be measured in kilobytes rather than
+                // number of items.
+                return bitmap.getByteCount() / 1024;
+            }
+        };
     }
 
 
