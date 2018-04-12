@@ -10,9 +10,11 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private MyAdapter adapter;
     private Handler handler;
     private ListView listviewsimple;
+    private Spinner resSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +41,13 @@ public class MainActivity extends AppCompatActivity {
         pageNumInput = findViewById(R.id.editTextPageNum);
         Button submitBtn = findViewById(R.id.submitBtn);
         listviewsimple = findViewById(R.id.listviewsimple);
+        resSpinner = findViewById(R.id.resSpinner);
 
-
-        VideoInfo info3 = new VideoInfo("address", "Title", "101", "imgsrc", "100", "3000", "3.3");
-        list = new ArrayList<>();
+        String[] resArr = {"Source", "540p", "360p"};
+        ArrayAdapter<String> spinnerAdapter=new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, resArr);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
+        resSpinner.setAdapter(spinnerAdapter);
+        resSpinner.setSelection(1,true);
 
 
     }
@@ -113,7 +119,8 @@ public class MainActivity extends AppCompatActivity {
 
         Runnable runnable = new Runnable() {
             public void run() {
-                url[0] = CrawlTool.GetVideoAddress(address, "540p");
+                String resolution = resSpinner.getSelectedItem().toString();
+                url[0] = CrawlTool.GetVideoAddress(address, resolution);
                 if (!url[0].contains("file.php")) {
                     //视频来自外站
                     url[0] = "TempAddressForOuterVideo";

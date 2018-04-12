@@ -11,10 +11,11 @@
     tools:context=".MainActivity">
 
     <TableRow>
+
         <EditText
             android:id="@+id/editTextPageNum"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:ems="10"
             android:gravity="center"
@@ -24,14 +25,21 @@
             android:textColor="@color/colorNightText"
             android:textColorHint="@color/colorNightText" />
 
+        <Spinner
+            android:id="@+id/resSpinner"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
         <Button
             android:id="@+id/submitBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:background="@color/colorNightBG"
             android:onClick="onSumbit"
             android:text="Submit"
-            android:textColor="@color/colorNightText" />
+            android:textColor="@color/colorNightText"
+            android:layout_weight="1"/>
     </TableRow>
     <ListView
         android:id="@+id/listviewsimple"
