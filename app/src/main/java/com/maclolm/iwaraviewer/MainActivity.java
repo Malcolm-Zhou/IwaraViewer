@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                     // 将文本内容放到系统剪贴板里。
                     cm.setText(url);
                     Toast.makeText(getApplicationContext(), "复制成功", Toast.LENGTH_SHORT).show();
-                    //play(address);
+                    play(url);
 
                 }
             }
@@ -129,10 +129,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void play(String url) {
-        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
-        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+//        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+//        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
         Intent mediaIntent = new Intent(Intent.ACTION_VIEW);
-        mediaIntent.setDataAndType(Uri.parse(url), mimeType);
+        mediaIntent.setDataAndType(Uri.parse(url), "video/mp4");
         startActivity(mediaIntent);
     }
 
