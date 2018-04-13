@@ -1,6 +1,7 @@
 package com.maclolm.iwaraviewer;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView listviewsimple;
     private Spinner resSpinner;
     private LruCache<String, Bitmap> mMemoryCache;
+    private ProgressDialog waitingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +59,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void onSumbit(View view) {
         final String pageNum = pageNumInput.getText().toString();
-        Toast.makeText(getApplicationContext(), "Loading Page: " + pageNum, Toast.LENGTH_SHORT).show();
         //开一条子线程加载网络数据
         try {
+            showWaitingDialog(pageNum);
             //handler与线程之间的通信及数据处理
             @SuppressLint("HandlerLeak") final Handler handler = new Handler() {
                 public void handleMessage(Message msg) {
@@ -67,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
                         //msg.obj是获取handler发送信息传来的数据
                         @SuppressWarnings("unchecked")
                         ArrayList<VideoInfo> list = (ArrayList<VideoInfo>) msg.obj;
+                        waitingDialog.dismiss();
                         //给ListView绑定数据
                         BinderListData(list);
                     }
@@ -155,6 +158,18 @@ public class MainActivity extends AppCompatActivity {
                 return bitmap.getByteCount() / 1024;
             }
         };
+    }
+
+    private void showWaitingDialog(String pageNum) {
+        /* 等待Dialog具有屏蔽其他控件的交互能力
+         * @setCancelable 为使屏幕不可点击，设置为不可取消(false)
+         * 下载等事件完成后，主动调用函数关闭该Dialog
+         */
+        waitingDialog = new ProgressDialog(MainActivity.this);
+        waitingDialog.setMessage("Loading Page: " + pageNum);
+        waitingDialog.setIndeterminate(true);
+        waitingDialog.setCancelable(false);
+        waitingDialog.show();
     }
 
 
