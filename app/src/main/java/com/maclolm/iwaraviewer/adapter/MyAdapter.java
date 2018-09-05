@@ -61,7 +61,7 @@ public class MyAdapter extends BaseAdapter implements ListAdapter {
         ImageView iv_img = convertView.findViewById(R.id.img);
         iv_img.setImageResource(R.mipmap.test);
         //启动异步任务，加载网络图片
-        loadBitmap(http, iv_img);
+//        loadBitmap(http, iv_img);
         TextView tv_title = convertView.findViewById(R.id.title);
         TextView tv_address = convertView.findViewById(R.id.address);
         TextView tv_view = convertView.findViewById(R.id.view);

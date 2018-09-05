@@ -77,7 +77,12 @@ public class MainActivity extends AppCompatActivity {
             };
             Runnable runnable = new Runnable() {
                 public void run() {
-                    list = CrawlTool.getCrawlData(pageNum);
+//                    list = CrawlTool.getCrawlData(pageNum);
+                    list = new ArrayList<>();
+                    list.add(new VideoInfo("address", "title", "0", "imgSrc", "1", "1", "1"));
+                    list.add(new VideoInfo("address", "title", "0", "imgSrc", "1", "1", "1"));
+                    list.add(new VideoInfo("address", "title", "0", "imgSrc", "1", "1", "1"));
+                    list.add(new VideoInfo("address", "title", "0", "imgSrc", "1", "1", "1"));
                     handler.sendMessage(handler.obtainMessage(10, list));
                 }
             };
